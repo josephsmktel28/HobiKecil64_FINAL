@@ -252,7 +252,7 @@ CREATE TABLE `coupons` (
   `type` enum('fixed','percent') NOT NULL,
   `value` decimal(8,2) NOT NULL,
   `cart_value` decimal(8,2) NOT NULL,
-  `expiry_date` date NOT NULL DEFAULT cast(current_timestamp() as date),
+  `expiry_date` date NOT NULL DEFAULT (cast(current_timestamp() as date)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
