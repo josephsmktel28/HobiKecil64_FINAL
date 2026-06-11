@@ -9,7 +9,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-
+    
+    <!-- Upgrade Insecure Requests: Otomatis mengubah http:// menjadi https:// di browser -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="surfside media" />
