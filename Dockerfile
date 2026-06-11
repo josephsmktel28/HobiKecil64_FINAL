@@ -20,6 +20,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Konfigurasi Apache DocumentRoot (Diarahkan ke folder /public Laravel)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV ASSET_URL "https://hobikecil64-final.onrender.com"
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
