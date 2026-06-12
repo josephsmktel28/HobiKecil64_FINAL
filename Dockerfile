@@ -3,6 +3,8 @@ FROM php:8.2-apache
 # Instal dependensi OS yang dibutuhkan Laravel & Node.js
 RUN apt-get update && apt-get install -y \
     libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     zip \
@@ -16,7 +18,8 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instal ekstensi PHP (termasuk pdo_mysql untuk database)
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Konfigurasi Apache DocumentRoot (Diarahkan ke folder /public Laravel)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
@@ -46,5 +49,6 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
-# Berikan hak akses yang benar untuk folder storage dan cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Berikan hak akses yang benar untuk folder storage, cache, dan uploads
+RUN mkdir -p /var/www/html/public/uploads/brands /var/www/html/public/uploads/categories /var/www/html/public/uploads/products/thumbnails /var/www/html/public/uploads/slides \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
