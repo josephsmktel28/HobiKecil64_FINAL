@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 define('LARAVEL_START', microtime(true));
 
 // Paksa request untuk dideteksi sebagai HTTPS ketika berada di lingkungan server / bukan localhost
+header('X-Debug-Render: V3_Active');
 if (isset($_SERVER['HTTP_HOST']) && !str_contains($_SERVER['HTTP_HOST'], 'localhost') && !str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')) {
     $_SERVER['HTTPS'] = 'on';
 }
