@@ -205,6 +205,9 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <input type="text" name="tracking_number" class="form-control" placeholder="Masukkan No. Resi Pengiriman" value="{{ $order->tracking_number }}" style="height: 48px; border: 1px solid #e1e1e1; border-radius: 6px; padding: 0 12px;">
+                        </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary tf-button w208"> Update Status</button>
                         </div>

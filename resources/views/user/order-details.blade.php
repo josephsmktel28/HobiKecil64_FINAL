@@ -155,6 +155,12 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @if ($order->tracking_number)
+                                <tr>
+                                    <th>No. Resi</th>
+                                    <td colspan="5" style="font-weight: 600; color: #333; font-size: 15px;">{{ $order->tracking_number }}</td>
+                                </tr>
+                                @endif
                             </table>
                         </div>
                         <div class="divider"></div>

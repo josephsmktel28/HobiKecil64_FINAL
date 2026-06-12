@@ -59,6 +59,7 @@
                                         <th class="text-center">Order Date</th>
                                         <th class="text-center">Items</th>
                                         <th class="text-center">Delivered On</th>
+                                        <th class="text-center">No. Resi</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -87,6 +88,7 @@
                                         <td class="text-center">{{$order->created_at}}</td>
                                         <td class="text-center">{{$order->orderItems->count()}}</td>
                                         <td class="text-center">{{$order->delivered_date}}</td>
+                                        <td class="text-center">{{$order->tracking_number ?? '-'}}</td>
                                         <td class="text-center">
                                             <a href="{{route('user.order.details',['order_id'=>$order->id])}}">
                                                 <div class="list-icon-function view-icon">

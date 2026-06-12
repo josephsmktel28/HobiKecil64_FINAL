@@ -635,6 +635,10 @@ class AdminController extends Controller
 
         $order->status = $request->order_status;
 
+        if ($request->has('tracking_number')) {
+            $order->tracking_number = $request->tracking_number;
+        }
+
         if ($request->order_status == 'delivered') {
             $order->delivered_date = Carbon::now();
         } elseif ($request->order_status == 'canceled') {
