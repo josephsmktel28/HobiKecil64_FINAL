@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Paksa request untuk dideteksi sebagai HTTPS ketika berada di lingkungan proxy Render
-if ((isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || getenv('RENDER') || isset($_ENV['RENDER'])) {
+// Paksa request untuk dideteksi sebagai HTTPS ketika berada di lingkungan server / bukan localhost
+if (isset($_SERVER['HTTP_HOST']) && !str_contains($_SERVER['HTTP_HOST'], 'localhost') && !str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')) {
     $_SERVER['HTTPS'] = 'on';
 }
 
