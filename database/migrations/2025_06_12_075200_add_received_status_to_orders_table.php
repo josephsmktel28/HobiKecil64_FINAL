@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('ordered','delivered','canceled','received') DEFAULT 'ordered'");
+        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('ordered','on_the_way','delivered','canceled','received') DEFAULT 'ordered'");
     }
 
     /**

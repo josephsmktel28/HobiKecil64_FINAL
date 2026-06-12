@@ -49,9 +49,18 @@ class UserController extends Controller
     public function order_confirm_received(Request $request)
     {
         $order = Order::where('user_id', Auth::user()->id)->where('id', $request->order_id)->first();
-        if ($order && $order->status == 'delivered') {
-            $order->status = "received";
+        if ($order && $order->status == 'on_the_way') {
+            $order->status = "delivered";
+            $order->delivered_date = Carbon::now();
             $order->save();
+
+            // Update transaction status to approved
+            $transaction = Transaction::where('order_id', $order->id)->first();
+            if ($transaction) {
+                $transaction->status = 'approved';
+                $transaction->save();
+            }
+
             return back()->with('status', "Pesanan telah dikonfirmasi diterima. Terima kasih!");
         }
         return back()->with('error', "Pesanan tidak dapat dikonfirmasi.");

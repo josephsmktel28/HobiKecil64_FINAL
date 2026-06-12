@@ -76,6 +76,8 @@
                                                 <span class="badge bg-success">Diterima</span>
                                             @elseif($order->status == 'delivered')
                                                 <span class="badge bg-success">Delivered</span>
+                                            @elseif($order->status == 'on_the_way')
+                                                <span class="badge bg-info text-white">Paket Sedang Dikirim</span>
                                             @elseif($order->status == 'canceled')
                                                 <span class="badge bg-danger">Canceled</span>
                                             @else

@@ -55,12 +55,16 @@
                         <tr>
                             <th>Order Status</th>
                             <td colspan="5">
-                                @if ($order->status == 'delivered')
+                                @if ($order->status == 'received')
+                                    <span class="badge bg-success">Diterima</span>
+                                @elseif ($order->status == 'delivered')
                                     <span class="badge bg-success">Delivered</span>
+                                @elseif ($order->status == 'on_the_way')
+                                    <span class="badge bg-info text-white">On The Way</span>
                                 @elseif($order->status == 'canceled')
                                     <span class="badge bg-danger">Canceled</span>
                                 @else
-                                    <span class="badge bg-danger">Ordered</span>
+                                    <span class="badge bg-warning">Ordered</span>
                                 @endif
                             </td>
                         </tr>
@@ -191,6 +195,8 @@
                             <div class="select">
                                 <select name="order_status" id="order_status">
                                     <option value="ordered" {{ $order->status == 'ordered' ? 'selected' : '' }}>Ordered
+                                    </option>
+                                    <option value="on_the_way" {{ $order->status == 'on_the_way' ? 'selected' : '' }}>Your package is on the way
                                     </option>
                                     <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered
                                     </option>
