@@ -142,12 +142,14 @@
                                 <tr>
                                     <th>Order Status</th>
                                     <td colspan="5">
-                                        @if ($order->status == 'delivered')
+                                        @if ($order->status == 'received')
+                                            <span class="badge bg-success">Diterima</span>
+                                        @elseif ($order->status == 'delivered')
                                             <span class="badge bg-success">Delivered</span>
                                         @elseif($order->status == 'canceled')
                                             <span class="badge bg-danger">Canceled</span>
                                         @else
-                                            <span class="badge bg-danger">Ordered</span>
+                                            <span class="badge bg-warning">Ordered</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -277,6 +279,17 @@
                             </form>
                         </div>
                     @endif
+
+                    @if ($order->status == 'delivered')
+                        <div class="wg box mt-5 text-right">
+                            <form action="{{ route('user.order.confirm_received') }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="order_id" value="{{ $order->id }}" />
+                                <button type="button" class="btn btn-success confirm-received" style="background-color: #40c710; border-color: #40c710; color: #fff; padding: 10px 24px; font-weight: 600;">Terima Pesanan</button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
 
             </div>
@@ -298,6 +311,23 @@
                     icon: "warning",
                     buttons: ["Kembali", "Yakin"],
                     dangerMode: true,
+                }).then(function(result) {
+                    if (result) {
+                        form.submit();
+                    }
+                });
+            });
+
+            $('.confirm-received').on('click', function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest('form');
+
+                swal({
+                    title: "Konfirmasi Terima Pesanan",
+                    text: "Apakah kamu yakin pesanan sudah diterima?",
+                    icon: "info",
+                    buttons: ["Kembali", "Ya, Sudah Diterima"],
                 }).then(function(result) {
                     if (result) {
                         form.submit();

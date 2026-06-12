@@ -72,7 +72,9 @@
                                         <td class="text-center">Rp {{$order->tax}}</td>
                                         <td class="text-center">Rp {{$order->total}}</td>
                                         <td class="text-center">
-                                            @if($order->status == 'delivered')
+                                            @if($order->status == 'received')
+                                                <span class="badge bg-success">Diterima</span>
+                                            @elseif($order->status == 'delivered')
                                                 <span class="badge bg-success">Delivered</span>
                                             @elseif($order->status == 'canceled')
                                                 <span class="badge bg-danger">Canceled</span>

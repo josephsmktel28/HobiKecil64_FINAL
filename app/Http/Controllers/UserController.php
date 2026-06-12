@@ -46,6 +46,17 @@ class UserController extends Controller
         return back()->with('status', "Order has been cancelled succesfully!");
     }
 
+    public function order_confirm_received(Request $request)
+    {
+        $order = Order::where('user_id', Auth::user()->id)->where('id', $request->order_id)->first();
+        if ($order && $order->status == 'delivered') {
+            $order->status = "received";
+            $order->save();
+            return back()->with('status', "Pesanan telah dikonfirmasi diterima. Terima kasih!");
+        }
+        return back()->with('error', "Pesanan tidak dapat dikonfirmasi.");
+    }
+
     public function address()
     {
         $address = Address::where('user_id', Auth::id())->first();
