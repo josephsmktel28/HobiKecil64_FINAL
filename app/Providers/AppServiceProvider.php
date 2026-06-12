@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production' || env('APP_ENV') === 'production' || str_contains(request()->getHost(), 'onrender.com')) {
+        // Paksa HTTPS jika bukan di local atau jika dijalankan di Render
+        if (config('app.env') !== 'local' || env('RENDER') !== null || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
             URL::forceScheme('https');
         }
     }
