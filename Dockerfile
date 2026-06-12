@@ -52,3 +52,6 @@ RUN npm run build
 # Berikan hak akses yang benar untuk folder storage, cache, dan uploads
 RUN mkdir -p /var/www/html/public/uploads/brands /var/www/html/public/uploads/categories /var/www/html/public/uploads/products/thumbnails /var/www/html/public/uploads/slides \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
+
+# Jalankan database migration saat build
+CMD php artisan migrate --force && apache2-foreground
