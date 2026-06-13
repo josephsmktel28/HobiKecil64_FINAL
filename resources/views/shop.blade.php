@@ -190,18 +190,12 @@
                         </h5>
                         <div id="accordion-filter-price" class="accordion-collapse collapse show border-0"
                             aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
-                            <input class="price-range-slider" type="text" name="price_range" value=""
-                                data-slider-min="0" data-slider-max="10000000" data-slider-step="5"
-                                data-slider-value="[{{ $min_price }},{{ $max_price }}]" data-currency="Rp" />
-                            <div class="price-range__info d-flex align-items-center mt-2">
-                                <div class="me-auto">
-                                    <span class="text-secondary">Min Price: </span>
-                                    <span class="price-range__min">Rp {{ $min_price }}</span>
-                                </div>
-                                <div>
-                                    <span class="text-secondary">Max Price: </span>
-                                    <span class="price-range__max">Rp {{ $max_price }}</span>
-                                </div>
+                            <div class="accordion-body px-0 pb-0 pt-3">
+                                <select class="form-select" id="priceSortSidebar" style="border: 1px solid #e1e1e1; border-radius: 6px; padding: 8px 12px; font-size: 14px; cursor: pointer;">
+                                    <option value="-1" {{ $order == -1 ? 'selected' : '' }}>Default</option>
+                                    <option value="3" {{ $order == 3 ? 'selected' : '' }}>Harga: Rendah ke Tinggi</option>
+                                    <option value="4" {{ $order == 4 ? 'selected' : '' }}>Harga: Tinggi ke Rendah</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -563,11 +557,10 @@
                 $("#frmfilter").submit();
             })
 
-            $(".price-range-slider").on("change", function() {
-                let value = $(this).val();
-                let valueArray = value.split(',');
-                $("#minPrice").val(valueArray[0]);
-                $("#maxPrice").val(valueArray[1]);
+            $("#priceSortSidebar").on("change", function() {
+                var selectedOrder = $(this).val();
+                $("#order").val(selectedOrder);
+                $("#orderby").val(selectedOrder);
                 $("#frmfilter").submit();
             })
         });
