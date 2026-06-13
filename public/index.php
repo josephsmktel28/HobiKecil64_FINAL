@@ -4,10 +4,12 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Paksa request untuk dideteksi sebagai HTTPS ketika berada di lingkungan server / bukan localhost
-header('X-Debug-Render: V3_Active');
+// Paksa request untuk dideteksi sebagai HTTPS di lingkungan production (Render proxy)
 if (isset($_SERVER['HTTP_HOST']) && !str_contains($_SERVER['HTTP_HOST'], 'localhost') && !str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')) {
     $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = 443;
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+    $_SERVER['HTTP_X_FORWARDED_SSL'] = 'on';
 }
 
 // Determine if the application is in maintenance mode...
