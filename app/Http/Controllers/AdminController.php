@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\str;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Auth;
@@ -144,9 +144,7 @@ class AdminController extends Controller
         $destinationPath = public_path('uploads/brands');
         $img = Image::read($image->path());
         $img->cover(100, 100, "top");
-        $img->resize(100, 100, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $imageName);
+        $img->save($destinationPath . '/' . $imageName);
     }
 
     public function brand_delete($id)
@@ -206,9 +204,7 @@ class AdminController extends Controller
         $destinationPath = public_path('uploads/categories');
         $img = Image::read($image->path());
         $img->cover(100, 100, "top");
-        $img->resize(100, 100, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $imageName);
+        $img->save($destinationPath . '/' . $imageName);
     }
 
     public function category_edit($id)
@@ -367,13 +363,10 @@ class AdminController extends Controller
 
             $img = $imageManager->read($image->path());
             $img->cover(400, 500, "top");
-            $img->resize(400, 500, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save($destinationPath . '/' . $imageName);
+            $img->save($destinationPath . '/' . $imageName);
 
-            $img->resize(120, 120, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save($destinationPathThumbnail . '/' . $imageName);
+            $img->scaleDown(120, 120);
+            $img->save($destinationPathThumbnail . '/' . $imageName);
         } else {
             $image->move($destinationPath, $imageName);
             copy($destinationPath . '/' . $imageName, $destinationPathThumbnail . '/' . $imageName);
@@ -703,9 +696,7 @@ class AdminController extends Controller
         $destinationPath = public_path('uploads/slides');
         $img = Image::read($image->path());
         $img->cover(400, 690, "top");
-        $img->resize(400, 690, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $imageName);
+        $img->save($destinationPath . '/' . $imageName);
     }
 
     public function slide_edit($id)
