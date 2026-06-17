@@ -58,6 +58,21 @@ class CartController extends Controller
     {
         $this->syncAuctionWinsToCart();
         $items = \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->content();
+
+        // Paksa quantity = 1 untuk produk lelang
+        $updated = false;
+        foreach ($items as $item) {
+            $product = \App\Models\Product::find($item->id);
+            if ($product && $product->auction_enabled && $item->qty > 1) {
+                \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->update($item->rowId, 1);
+                $updated = true;
+            }
+        }
+
+        if ($updated) {
+            $items = \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->content();
+        }
+
         return view('cart', compact('items'));
     }
 
@@ -90,16 +105,34 @@ class CartController extends Controller
             if (! $highestBid || ! $isWinner) {
                 return redirect()->back()->with('error', 'Lelang sudah selesai, hanya pemenang yang bisa membeli.');
             }
+
+            // Pastikan produk lelang hanya bisa ditambah 1 dan tidak duplikat
+            $existing = Cart::instance('cart')->search(function ($cartItem, $rowId) use ($product) {
+                return $cartItem->id === $product->id;
+            });
+
+            if ($existing->isNotEmpty()) {
+                return redirect()->back()->with('error', 'Produk lelang ini sudah ada di keranjang Anda.');
+            }
+
+            // Paksa quantity menjadi 1
+            $request->merge(['quantity' => 1]);
         }
 
         Cart::instance('cart')->add($request->id, $request->name, $request->quantity, $request->price)->associate('App\Models\Product');
-        return redirect()->back();
+        return redirect()->back()->with('status', 'Berhasil ditambahkan ke keranjang.');
     }
 
     public function increase_cart_quantity($rowId)
     {
-        $product = Cart::instance('cart')->get($rowId);
-        $qty = $product->qty + 1;
+        $cartItem = Cart::instance('cart')->get($rowId);
+        $product = \App\Models\Product::find($cartItem->id);
+
+        if ($product && $product->auction_enabled) {
+            return redirect()->back()->with('error', 'Kuantitas produk lelang tidak dapat ditambah.');
+        }
+
+        $qty = $cartItem->qty + 1;
         Cart::instance('cart')->update($rowId, $qty);
 
         if (Session::has('coupon')) {
