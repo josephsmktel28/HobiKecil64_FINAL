@@ -39,7 +39,8 @@ class AuctionWinner extends Model
     {
         return \App\Models\OrderItem::where('product_id', $this->product_id)
             ->whereHas('order', function ($query) {
-                $query->where('user_id', $this->user_id);
+                $query->where('user_id', $this->user_id)
+                      ->where('created_at', '>=', $this->created_at);
             })
             ->exists();
     }

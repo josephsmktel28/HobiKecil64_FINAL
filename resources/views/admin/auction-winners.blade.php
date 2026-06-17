@@ -48,9 +48,9 @@
                                         <td>{{ $winner->created_at->format('d M Y H:i') }}</td>
                                         <td>
                                             @if($winner->isPaid())
-                                                <span class="badge bg-success">Sudah Bayar</span>
+                                                <span class="badge bg-success">Sudah Dibayar</span>
                                             @else
-                                                <span class="badge bg-danger">Belum Bayar</span>
+                                                <span class="badge bg-danger">Belum Checkout</span>
                                             @endif
                                         </td>
                                         <td>
