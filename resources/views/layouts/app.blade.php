@@ -34,6 +34,32 @@
 </head>
 
 <body class="gradient-bg">
+    @php
+        $hasActiveAuction = \App\Models\Product::where('auction_enabled', 1)
+            ->where(function($q) {
+                $q->whereNull('auction_start')->orWhere('auction_start', '<=', now());
+            })
+            ->where('auction_end', '>=', now())
+            ->exists();
+    @endphp
+    <style>
+        @keyframes pulse-live-dot {
+            0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); }
+            70% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 5px rgba(255, 82, 82, 0); }
+            100% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+        }
+        .lelang-live-badge {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #ff5252;
+            border-radius: 50%;
+            margin-left: 5px;
+            position: relative;
+            top: -5px;
+            animation: pulse-live-dot 1.5s infinite;
+        }
+    </style>
     <style>
         .menu-grid {
             display: grid;
@@ -393,7 +419,12 @@
                             <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
                         </li>
                         <li class="navigation__item">
-                            <a href="{{ route('shop.auctions') }}" class="navigation__link">Lelang</a>
+                            <a href="{{ route('shop.auctions') }}" class="navigation__link">
+                                Lelang
+                                @if($hasActiveAuction)
+                                    <span class="lelang-live-badge" title="Lelang sedang berlangsung!"></span>
+                                @endif
+                            </a>
                         </li>
                         <li class="navigation__item">
                             <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
@@ -487,7 +518,12 @@
                             <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
                         </li>
                         <li class="navigation__item">
-                            <a href="{{ route('shop.auctions') }}" class="navigation__link">Lelang</a>
+                            <a href="{{ route('shop.auctions') }}" class="navigation__link">
+                                Lelang
+                                @if($hasActiveAuction)
+                                    <span class="lelang-live-badge" title="Lelang sedang berlangsung!"></span>
+                                @endif
+                            </a>
                         </li>
                         <li class="navigation__item">
                             <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
