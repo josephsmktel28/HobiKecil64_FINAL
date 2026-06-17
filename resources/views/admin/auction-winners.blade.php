@@ -41,35 +41,41 @@
                             <tbody>
                                 @foreach ($winners as $winner)
                                     <tr>
-                                        <td>{{ $winner->product->name }}</td>
-                                        <td>{{ $winner->user->name }}</td>
-                                        <td>{{ $winner->user->email }}</td>
-                                        <td>Rp {{ number_format($winner->bid->bid_amount ?? 0, 0, ',', '.') }}</td>
+                                        <td>{{ $winner->product?->name ?? 'Produk Dihapus' }}</td>
+                                        <td>{{ $winner->user?->name ?? 'User Dihapus' }}</td>
+                                        <td>{{ $winner->user?->email ?? '-' }}</td>
+                                        <td>Rp {{ number_format($winner->bid?->bid_amount ?? 0, 0, ',', '.') }}</td>
                                         <td>{{ $winner->created_at->format('d M Y H:i') }}</td>
                                         <td>{{ $winner->reserved_until ? $winner->reserved_until->format('d M Y H:i') : '-' }}</td>
                                         <td>
-                                            @if($winner->user->is_blacklisted)
-                                                <span class="badge bg-danger">Blacklisted</span>
+                                            @if($winner->user)
+                                                @if($winner->user->is_blacklisted)
+                                                    <span class="badge bg-danger">Blacklisted</span>
+                                                @else
+                                                    <span class="badge bg-success">Aman</span>
+                                                @endif
                                             @else
-                                                <span class="badge bg-success">Aman</span>
+                                                <span class="badge bg-secondary">User Dihapus</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="list-icon-function">
-                                                <form action="{{ route('admin.user.blacklist', $winner->user->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    @if($winner->user->is_blacklisted)
-                                                        <button type="submit" class="btn btn-sm btn-success text-white" style="background-color:#28a745;">
-                                                            Hapus Blacklist
-                                                        </button>
-                                                    @else
-                                                        <button type="button" class="btn btn-sm btn-danger text-white blacklist-btn" style="background-color:#dc3545;">
-                                                            Blacklist
-                                                        </button>
-                                                    @endif
-                                                </form>
-                                            </div>
+                                            @if($winner->user)
+                                                <div class="list-icon-function">
+                                                    <form action="{{ route('admin.user.blacklist', $winner->user->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        @if($winner->user->is_blacklisted)
+                                                            <button type="submit" class="btn btn-sm btn-success text-white" style="background-color:#28a745;">
+                                                                Hapus Blacklist
+                                                            </button>
+                                                        @else
+                                                            <button type="button" class="btn btn-sm btn-danger text-white blacklist-btn" style="background-color:#dc3545;">
+                                                                Blacklist
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
