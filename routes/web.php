@@ -21,6 +21,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/auctions', [ShopController::class, 'index'])->name('shop.auctions');
 Route::post('/shop/{product_slug}/bid', [ShopController::class, 'submitBid'])->name('shop.product.bid')->middleware('auth');
+Route::get('/shop/{product_slug}/bids', [ShopController::class, 'getBids'])->name('shop.product.bids');
 Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

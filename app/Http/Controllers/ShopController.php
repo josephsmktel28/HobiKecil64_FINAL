@@ -196,4 +196,33 @@ class ShopController extends Controller
 
         return back()->with('status', 'Bid Anda berhasil dikirim.');
     }
+
+    public function getBids($product_slug)
+    {
+        $product = Product::where('slug', $product_slug)->first();
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        $highestBid = $product->bids()->orderByDesc('bid_amount')->first();
+        $bidHistory = $product->bids()->with('user')->orderByDesc('bid_amount')->take(5)->get();
+
+        $bids = $bidHistory->map(function ($bid) {
+            return [
+                'user_name' => $bid->user?->name ?? 'Pembeli',
+                'bid_amount' => $bid->bid_amount,
+                'bid_amount_formatted' => 'Rp ' . number_format($bid->bid_amount, 0, ',', '.'),
+                'created_at' => $bid->created_at->toIso8601String(),
+                'time_ago' => $bid->created_at->diffForHumans(),
+            ];
+        });
+
+        return response()->json([
+            'highest_bid' => $highestBid ? $highestBid->bid_amount : null,
+            'highest_bid_formatted' => $highestBid ? 'Rp ' . number_format($highestBid->bid_amount, 0, ',', '.') : null,
+            'minimum_next_bid' => $highestBid ? $highestBid->bid_amount + 1 : ($product->sale_price ?: $product->regular_price),
+            'bids' => $bids,
+            'total_bids' => $product->bids()->count(),
+        ]);
+    }
 }

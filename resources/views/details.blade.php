@@ -112,10 +112,10 @@
             {{-- <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span> --}}
           </div>
           <div class="product-single__price">
-            <span class="current-price">
+            <span class="current-price" id="current-price-display">
               Rp {{ number_format($currentPrice, 0, ',', '.') }}
             </span>
-            <div class="text-secondary mt-2">
+            <div class="text-secondary mt-2" id="highest-bid-info">
               @if(isset($highestBid) && $highestBid)
                 Tawaran tertinggi saat ini: Rp {{ number_format($highestBid->bid_amount, 0, ',', '.') }}
               @else
@@ -204,12 +204,12 @@
             @endif
             <div class="product-single__bid-history mt-4">
               <h6>Riwayat Bid Terakhir</h6>
-              <ul class="list-group">
+              <ul class="list-group" id="bid-history-list">
                 @foreach($bidHistory as $bid)
                   <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                       <strong>{{ $bid->user?->name ?? 'Pembeli' }}</strong>
-                      <div class="text-muted small"><span class="js-bid-time" data-datetime="{{ $bid->created_at->toIso8601String() }}">{{ $bid->created_at->format('d M Y H:i') }}</span></div>
+                      <div class="text-muted small"><span class="js-bid-time" data-datetime="{{ $bid->created_at->toIso8601String() }}">{{ $bid->created_at->diffForHumans() }}</span></div>
                     </div>
                     <span>Rp {{ number_format($bid->bid_amount, 0, ',', '.') }}</span>
                   </li>
@@ -572,3 +572,74 @@
     </section><!-- /.products-carousel container -->
   </main>
 @endsection
+
+@if($auctionEnabled)
+@push('scripts')
+<script>
+(function() {
+    const productSlug = '{{ $product->slug }}';
+    const bidApiUrl = '/shop/' + productSlug + '/bids';
+    let lastBidCount = {{ $product->bids()->count() }};
+
+    function fetchLatestBids() {
+        fetch(bidApiUrl, {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.total_bids !== lastBidCount) {
+                lastBidCount = data.total_bids;
+                updateBidUI(data);
+            }
+        })
+        .catch(err => console.log('Bid poll error:', err));
+    }
+
+    function updateBidUI(data) {
+        // Update harga tertinggi
+        const priceDisplay = document.getElementById('current-price-display');
+        if (priceDisplay && data.highest_bid_formatted) {
+            priceDisplay.textContent = data.highest_bid_formatted;
+        }
+
+        // Update info tawaran tertinggi
+        const highestInfo = document.getElementById('highest-bid-info');
+        if (highestInfo && data.highest_bid_formatted) {
+            highestInfo.textContent = 'Tawaran tertinggi saat ini: ' + data.highest_bid_formatted;
+        }
+
+        // Update input bid minimum
+        const bidInput = document.getElementById('bid_amount');
+        if (bidInput && data.minimum_next_bid) {
+            bidInput.value = data.minimum_next_bid;
+            bidInput.min = data.minimum_next_bid;
+        }
+
+        // Update bid history list
+        const bidList = document.getElementById('bid-history-list');
+        if (bidList && data.bids) {
+            let html = '';
+            data.bids.forEach(function(bid) {
+                html += '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                    '<div>' +
+                    '<strong>' + bid.user_name + '</strong>' +
+                    '<div class="text-muted small">' + bid.time_ago + '</div>' +
+                    '</div>' +
+                    '<span>' + bid.bid_amount_formatted + '</span>' +
+                    '</li>';
+            });
+            bidList.innerHTML = html;
+
+            // Flash animation
+            bidList.style.transition = 'background-color 0.3s';
+            bidList.style.backgroundColor = '#e8f5e9';
+            setTimeout(() => { bidList.style.backgroundColor = ''; }, 800);
+        }
+    }
+
+    // Poll setiap 3 detik
+    setInterval(fetchLatestBids, 3000);
+})();
+</script>
+@endpush
+@endif
