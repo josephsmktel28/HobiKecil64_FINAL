@@ -72,25 +72,7 @@ class CloseAuctions extends Command
                 }
             }
 
-            // Try to add the won product to the user's persistent cart (stored in DB)
-            try {
-                if (Schema::hasTable(config('cart.database.table', 'shoppingcart'))) {
-                    $identifier = 'user_' . $highestBid->user_id;
-
-                    // Restore existing stored cart for user (if any)
-                    Cart::instance('cart')->restore($identifier);
-
-                    // Add product as 1 quantity at winning bid price
-                    Cart::instance('cart')->add($product->id, $product->name, 1, $highestBid->bid_amount)->associate('App\\Models\\Product');
-
-                    // Store back to persistent storage for this user
-                    Cart::instance('cart')->store($identifier);
-
-                    $this->info("Added product {$product->id} to persistent cart for user {$highestBid->user_id}");
-                }
-            } catch (\Exception $e) {
-                $this->error('Failed to add to persistent cart: ' . $e->getMessage());
-            }
+            // The won product will be dynamically added to the user's cart when they visit the cart page.
         }
 
         return 0;

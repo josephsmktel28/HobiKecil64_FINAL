@@ -37,9 +37,27 @@ class CartController extends Controller
         return floatval($value);
     }
 
+    public function syncAuctionWinsToCart()
+    {
+        if (auth()->check()) {
+            $winners = \App\Models\AuctionWinner::with(['product', 'bid'])->where('user_id', auth()->id())->get();
+            foreach ($winners as $winner) {
+                if (!$winner->isPaid() && $winner->product && $winner->bid) {
+                    $exists = \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->search(function ($cartItem, $rowId) use ($winner) {
+                        return $cartItem->id === $winner->product_id;
+                    });
+                    if ($exists->isEmpty()) {
+                        \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->add($winner->product->id, $winner->product->name, 1, $winner->bid->bid_amount)->associate('App\\Models\\Product');
+                    }
+                }
+            }
+        }
+    }
+
     public function index()
     {
-        $items = Cart::instance('cart')->content();
+        $this->syncAuctionWinsToCart();
+        $items = \Surfsidemedia\Shoppingcart\Facades\Cart::instance('cart')->content();
         return view('cart', compact('items'));
     }
 
@@ -224,6 +242,8 @@ class CartController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login');
         }
+
+        $this->syncAuctionWinsToCart();
 
         $address = Address::where('user_id', Auth::user()->id)->where('isdefault', 1)->first();
 
