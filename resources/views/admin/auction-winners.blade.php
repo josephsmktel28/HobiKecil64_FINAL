@@ -33,7 +33,7 @@
                                     <th>Email</th>
                                     <th>Harga Menang</th>
                                     <th>Tanggal Menang</th>
-                                    <th>Batas Waktu Bayar</th>
+                                    <th>Status Pembayaran</th>
                                     <th>Status Blacklist</th>
                                     <th>Action</th>
                                 </tr>
@@ -46,7 +46,13 @@
                                         <td>{{ $winner->user?->email ?? '-' }}</td>
                                         <td>Rp {{ number_format($winner->bid?->bid_amount ?? 0, 0, ',', '.') }}</td>
                                         <td>{{ $winner->created_at->format('d M Y H:i') }}</td>
-                                        <td>{{ $winner->reserved_until ? $winner->reserved_until->format('d M Y H:i') : '-' }}</td>
+                                        <td>
+                                            @if($winner->isPaid())
+                                                <span class="badge bg-success">Sudah Bayar</span>
+                                            @else
+                                                <span class="badge bg-danger">Belum Bayar</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($winner->user)
                                                 @if($winner->user->is_blacklisted)
@@ -68,7 +74,7 @@
                                                             <button type="submit" class="btn btn-sm btn-success text-white" style="background-color:#28a745;">
                                                                 Hapus Blacklist
                                                             </button>
-                                                        @else
+                                                        @elseif(!$winner->isPaid())
                                                             <button type="button" class="btn btn-sm btn-danger text-white blacklist-btn" style="background-color:#dc3545;">
                                                                 Blacklist
                                                             </button>

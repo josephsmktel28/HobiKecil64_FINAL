@@ -34,4 +34,13 @@ class AuctionWinner extends Model
     {
         return $this->belongsTo(Bid::class);
     }
+
+    public function isPaid()
+    {
+        return \App\Models\OrderItem::where('product_id', $this->product_id)
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', $this->user_id);
+            })
+            ->exists();
+    }
 }
