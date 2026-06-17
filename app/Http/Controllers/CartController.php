@@ -45,6 +45,10 @@ class CartController extends Controller
 
     public function add_to_cart(Request $request)
     {
+        if (auth()->check() && auth()->user()->is_blacklisted) {
+            return redirect()->back()->with('error', 'Akun Anda telah di-blacklist. Anda tidak dapat bertransaksi.');
+        }
+
         $product = \App\Models\Product::find($request->id);
         if ($product && $product->auction_enabled) {
             // If auction still active, block

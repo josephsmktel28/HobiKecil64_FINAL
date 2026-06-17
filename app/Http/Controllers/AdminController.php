@@ -934,4 +934,27 @@ class AdminController extends Controller
 
         return view('admin.users', compact('users'));
     }
+
+    public function auction_winners()
+    {
+        $winners = AuctionWinner::with(['product', 'user', 'bid'])
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(12);
+        return view('admin.auction-winners', compact('winners'));
+    }
+
+    public function blacklist_user($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Toggle blacklist status
+        $user->is_blacklisted = !$user->is_blacklisted;
+        $user->save();
+
+        $statusMessage = $user->is_blacklisted 
+            ? "Akun {$user->name} telah dimasukkan ke daftar blacklist." 
+            : "Akun {$user->name} telah dihapus dari daftar blacklist.";
+
+        return back()->with("status", $statusMessage);
+    }
 }

@@ -118,6 +118,9 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::delete('/admin/user/{id}/delete', [AdminController::class, 'user_delete'])->name('admin.user.delete');
+    Route::put('/admin/user/{id}/blacklist', [AdminController::class, 'blacklist_user'])->name('admin.user.blacklist');
+
+    Route::get('/admin/auction-winners', [AdminController::class, 'auction_winners'])->name('admin.auction.winners');
 
     Route::get('/admin/search', [AdminController::class, 'search'])->name('admin.search');
     Route::get('admin/orders/search', [AdminController::class, 'searchOrders'])->name('admin.orders.search');

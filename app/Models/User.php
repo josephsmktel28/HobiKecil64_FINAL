@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'mobile',
         'password',
+        'is_blacklisted',
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_blacklisted' => 'boolean',
         ];
     }
 

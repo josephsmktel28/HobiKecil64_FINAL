@@ -165,6 +165,10 @@ class ShopController extends Controller
             'bid_amount' => 'required|numeric|min:1',
         ]);
 
+        if (auth()->check() && auth()->user()->is_blacklisted) {
+            return back()->with('error', 'Akun Anda telah di-blacklist. Anda tidak dapat mengikuti lelang.');
+        }
+
         $product = Product::where('slug', $product_slug)->first();
         if (!$product) {
             return back()->with('error', 'Produk tidak ditemukan.');

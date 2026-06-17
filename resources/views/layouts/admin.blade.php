@@ -171,6 +171,13 @@
                                     </a>
                                 </li>
 
+                                <li class="menu-item">
+                                    <a href="{{route('admin.auction.winners')}}" class="">
+                                        <div class="icon"><i class="icon-file-text"></i></div>
+                                        <div class="text">Pemenang Lelang</div>
+                                    </a>
+                                </li>
+
                                  <li class="menu-item">
                                  <form method="POST" action="{{route('logout')}}" id="logout-form"> 
                                      @csrf
