@@ -937,6 +937,9 @@ class AdminController extends Controller
 
     public function auction_winners()
     {
+        // Jalankan command untuk memproses lelang yang sudah berakhir namun belum tercatat
+        \Illuminate\Support\Facades\Artisan::call('auctions:close');
+
         $winners = AuctionWinner::with(['product', 'user', 'bid'])
                     ->orderBy('created_at', 'desc')
                     ->paginate(12);

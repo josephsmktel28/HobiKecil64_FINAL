@@ -109,6 +109,10 @@ class ShopController extends Controller
             abort(404);
         }
 
+        if ($product->isAuctionClosed() && ! \App\Models\AuctionWinner::where('product_id', $product->id)->exists()) {
+            \Illuminate\Support\Facades\Artisan::call('auctions:close');
+        }
+
         $highestBid = $product->bids()->orderByDesc('bid_amount')->first();
         $auctionEnabled = $product->auction_enabled ? true : false;
         $auctionActive = $product->isAuctionActive();
@@ -206,6 +210,10 @@ class ShopController extends Controller
         $product = Product::where('slug', $product_slug)->first();
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        if ($product->isAuctionClosed() && ! \App\Models\AuctionWinner::where('product_id', $product->id)->exists()) {
+            \Illuminate\Support\Facades\Artisan::call('auctions:close');
         }
 
         $highestBid = $product->bids()->orderByDesc('bid_amount')->first();
