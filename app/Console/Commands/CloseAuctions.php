@@ -27,25 +27,36 @@ class CloseAuctions extends Command
             ->get();
 
         foreach ($products as $product) {
-            // Skip if winner already recorded
-            if (AuctionWinner::where('product_id', $product->id)->exists()) {
-                continue;
-            }
-
             $highestBid = $product->bids()->orderByDesc('bid_amount')->first();
             if (!$highestBid) {
                 // No bids — skip or optionally notify admin
                 continue;
             }
 
-            $reservedUntil = Carbon::now()->addHours(48);
-
-            $winner = AuctionWinner::create([
-                'product_id' => $product->id,
-                'user_id' => $highestBid->user_id,
-                'bid_id' => $highestBid->id,
-                'reserved_until' => $reservedUntil,
-            ]);
+            // Skip if winner already recorded AND it matches the current highest bid
+            $existingWinner = AuctionWinner::where('product_id', $product->id)->first();
+            if ($existingWinner) {
+                if ($existingWinner->bid_id === $highestBid->id) {
+                    continue; // Nothing to update
+                } else {
+                    // Update to the new winner
+                    $existingWinner->update([
+                        'user_id' => $highestBid->user_id,
+                        'bid_id' => $highestBid->id,
+                        'reserved_until' => Carbon::now()->addHours(48),
+                    ]);
+                    $winner = $existingWinner;
+                    $this->info("Updated winner for product {$product->id}: user {$highestBid->user_id}");
+                }
+            } else {
+                $winner = AuctionWinner::create([
+                    'product_id' => $product->id,
+                    'user_id' => $highestBid->user_id,
+                    'bid_id' => $highestBid->id,
+                    'reserved_until' => Carbon::now()->addHours(48),
+                ]);
+                $this->info("Recorded winner for product {$product->id}: user {$highestBid->user_id}");
+            }
 
             $this->info("Recorded winner for product {$product->id}: user {$highestBid->user_id}");
 

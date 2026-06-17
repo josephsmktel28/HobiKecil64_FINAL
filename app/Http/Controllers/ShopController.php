@@ -196,6 +196,11 @@ class ShopController extends Controller
             'bid_amount' => $request->bid_amount,
         ]);
 
+        // Hapus pemenang lelang sebelumnya jika ada, karena ada bid baru yang masuk (misal admin memperpanjang waktu)
+        if (\Illuminate\Support\Facades\Schema::hasTable('auction_winners')) {
+            \App\Models\AuctionWinner::where('product_id', $product->id)->delete();
+        }
+
         // Jika produk sudah ada di keranjang, update harga item ke harga bid terbaru.
         $cartItem = Cart::instance('cart')->content()->where('id', $product->id)->first();
         if ($cartItem) {
