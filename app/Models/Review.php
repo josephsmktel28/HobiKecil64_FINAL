@@ -12,6 +12,7 @@ class Review extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'order_item_id',
         'rating',
         'comment',
     ];
@@ -25,4 +26,10 @@ class Review extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class);
+    }
+
 }

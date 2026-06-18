@@ -14,21 +14,22 @@ class ReviewController extends Controller
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
+            'order_item_id' => 'required|exists:order_items,id',
         ]);
 
         $user_id = Auth::id();
+        $order_item_id = $request->order_item_id;
 
-        // Check if user has already reviewed this product
-        $existingReview = Review::where('user_id', $user_id)
-            ->where('product_id', $product_id)
-            ->first();
+        // Check if user has already reviewed this specific order item
+        $existingReview = Review::where('order_item_id', $order_item_id)->first();
 
         if ($existingReview) {
-            return redirect()->back()->with('error', 'Anda sudah memberikan ulasan untuk produk ini.');
+            return redirect()->back()->with('error', 'Anda sudah memberikan ulasan untuk pesanan ini.');
         }
 
         // Check if user has purchased the product and order is delivered
-        $hasPurchased = OrderItem::where('product_id', $product_id)
+        $hasPurchased = OrderItem::where('id', $order_item_id)
+            ->where('product_id', $product_id)
             ->whereHas('order', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id)->where('status', 'delivered');
             })->exists();
@@ -40,6 +41,7 @@ class ReviewController extends Controller
         Review::create([
             'user_id' => $user_id,
             'product_id' => $product_id,
+            'order_item_id' => $order_item_id,
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);

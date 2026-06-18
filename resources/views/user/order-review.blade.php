@@ -25,9 +25,8 @@
 
                 @foreach($order->orderItems as $item)
                     @php
-                        $hasReviewed = \App\Models\Review::where('user_id', Auth::id())
-                                        ->where('product_id', $item->product_id)
-                                        ->exists();
+                        // Check if this specific order item has been reviewed
+                        $hasReviewed = \App\Models\Review::where('order_item_id', $item->id)->exists();
                     @endphp
                     <div class="wg-box mb-4 p-4 border rounded">
                         <div class="row align-items-center">
@@ -48,11 +47,12 @@
 
                                 @if($hasReviewed)
                                     <div class="alert alert-info py-2 mb-0">
-                                        <i class="fa fa-check-circle"></i> Anda sudah memberikan ulasan untuk produk ini.
+                                        <i class="fa fa-check-circle"></i> Anda sudah memberikan ulasan untuk pesanan ini.
                                     </div>
                                 @else
                                     <form action="{{ route('shop.review.store', ['product_id' => $item->product_id]) }}" method="POST" class="mt-3">
                                         @csrf
+                                        <input type="hidden" name="order_item_id" value="{{ $item->id }}">
                                         <div class="row">
                                             <div class="col-md-4 mb-3">
                                                 <label class="form-label">Rating *</label>
