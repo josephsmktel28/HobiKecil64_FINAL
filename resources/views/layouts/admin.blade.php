@@ -165,6 +165,13 @@
                                 </li>
 
                                 <li class="menu-item">
+                                    <a href="{{route('admin.reviews')}}" class="">
+                                        <div class="icon"><i class="icon-star"></i></div>
+                                        <div class="text">Reviews</div>
+                                    </a>
+                                </li>
+
+                                <li class="menu-item">
                                     <a href="{{route('admin.users')}}" class="">
                                         <div class="icon"><i class="icon-user"></i></div>
                                         <div class="text">User</div>

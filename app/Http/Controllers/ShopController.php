@@ -160,7 +160,21 @@ class ShopController extends Controller
             }
         }
 
-        return view('details', compact('product', 'rproducts', 'highestBid', 'currentPrice', 'bidHistory', 'auctionEnabled', 'auctionActive', 'auctionClosed', 'hasWinner', 'isWinner'));
+        $reviews = $product->reviews()->with('user')->orderBy('created_at', 'DESC')->get();
+        
+        $canReview = false;
+        if (auth()->check()) {
+            $userId = auth()->id();
+            $hasReviewed = $product->reviews()->where('user_id', $userId)->exists();
+            if (!$hasReviewed) {
+                $canReview = \App\Models\OrderItem::where('product_id', $product->id)
+                    ->whereHas('order', function ($query) use ($userId) {
+                        $query->where('user_id', $userId)->where('status', 'delivered');
+                    })->exists();
+            }
+        }
+
+        return view('details', compact('product', 'rproducts', 'highestBid', 'currentPrice', 'bidHistory', 'auctionEnabled', 'auctionActive', 'auctionClosed', 'hasWinner', 'isWinner', 'reviews', 'canReview'));
     }
 
     public function submitBid(Request $request, $product_slug)

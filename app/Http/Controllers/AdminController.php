@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\OrderItem;
 use App\Models\Transaction;
 use App\Models\Slide;
+use App\Models\Review;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -23,6 +24,18 @@ use App\Models\AuctionWinner;
 
 class AdminController extends Controller
 {
+    public function reviews(Request $request)
+    {
+        $reviews = Review::with(['user', 'product'])->orderBy('created_at', 'DESC')->paginate(10);
+        return view('admin.reviews', compact('reviews'));
+    }
+
+    public function review_delete($id)
+    {
+        $review = Review::findOrFail($id);
+        $review->delete();
+        return redirect()->route('admin.reviews')->with('status', 'Ulasan berhasil dihapus.');
+    }
     public function index()
     {
         $orders = Order::orderBy('created_at', 'DESC')->get()->take(10);

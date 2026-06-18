@@ -23,6 +23,7 @@ Route::get('/shop/auctions', [ShopController::class, 'index'])->name('shop.aucti
 Route::post('/shop/{product_slug}/bid', [ShopController::class, 'submitBid'])->name('shop.product.bid')->middleware('auth');
 Route::get('/shop/{product_slug}/bids', [ShopController::class, 'getBids'])->name('shop.product.bids');
 Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
+Route::post('/shop/review/{product_id}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('shop.review.store')->middleware('auth');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add_to_cart'])->name('cart.add');
@@ -121,6 +122,9 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::put('/admin/user/{id}/blacklist', [AdminController::class, 'blacklist_user'])->name('admin.user.blacklist');
 
     Route::get('/admin/auction-winners', [AdminController::class, 'auction_winners'])->name('admin.auction.winners');
+
+    Route::get('/admin/reviews', [AdminController::class, 'reviews'])->name('admin.reviews');
+    Route::delete('/admin/review/{id}/delete', [AdminController::class, 'review_delete'])->name('admin.review.delete');
 
     Route::get('/admin/search', [AdminController::class, 'search'])->name('admin.search');
     Route::get('admin/orders/search', [AdminController::class, 'searchOrders'])->name('admin.orders.search');

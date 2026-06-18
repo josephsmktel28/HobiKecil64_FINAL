@@ -29,6 +29,11 @@ class Product extends Model
         return $this->hasMany(Bid::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function isAuctionActive()
     {
         if (! $this->auction_enabled) return false;
