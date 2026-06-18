@@ -10360,6 +10360,8 @@ textarea.form-control-lg {
   height: 9px;
   margin-right: .25rem;
   fill: #ffc78b; }
+.review-star.empty {
+  fill: #e5e5e5; }
 
 .pc__btn-wl {
   display: flex;

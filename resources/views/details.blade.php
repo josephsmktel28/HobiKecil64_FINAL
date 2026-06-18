@@ -93,23 +93,17 @@
           <h1 class="product-single__name">{{$product->name}}</h1>
           <div class="product-single__rating">
             <div class="reviews-group d-flex">
-              <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_star" />
-              </svg>
-              <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_star" />
-              </svg>
-              <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_star" />
-              </svg>
-              <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_star" />
-              </svg>
-              <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_star" />
-              </svg>
+              @php
+                $avgRating = round($product->reviews()->avg('rating') ?? 0);
+                $reviewCount = $product->reviews()->count();
+              @endphp
+              @for($i=1; $i<=5; $i++)
+                <svg class="review-star {{ $i > $avgRating ? 'empty' : '' }}" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                  <use href="#icon_star" />
+                </svg>
+              @endfor
             </div>
-            {{-- <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span> --}}
+            <span class="reviews-note text-lowercase text-secondary ms-1">{{ $reviewCount }} reviews</span>
           </div>
           <div class="product-single__price">
             <span class="current-price" id="current-price-display">
@@ -348,7 +342,7 @@
                       <h6>{{ $review->user->name }}</h6>
                       <div class="reviews-group d-flex">
                         @for($i=1; $i<=5; $i++)
-                          <svg class="review-star {{ $i <= $review->rating ? 'filled-heart' : '' }}" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                          <svg class="review-star {{ $i > $review->rating ? 'empty' : '' }}" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
                             <use href="#icon_star" />
                           </svg>
                         @endfor

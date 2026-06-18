@@ -432,28 +432,18 @@
                                     </div>
                                     <div class="product-card__review d-flex align-items-center">
                                         <div class="reviews-group d-flex">
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_star" />
-                                            </svg>
+                                            @php
+                                                $avgRating = round($product->reviews()->avg('rating') ?? 0);
+                                                $reviewCount = $product->reviews()->count();
+                                            @endphp
+                                            @for($i=1; $i<=5; $i++)
+                                                <svg class="review-star {{ $i > $avgRating ? 'empty' : '' }}" viewBox="0 0 9 9"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <use href="#icon_star" />
+                                                </svg>
+                                            @endfor
                                         </div>
-                                        <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
+                                        <span class="reviews-note text-lowercase text-secondary ms-1">{{ $reviewCount }} reviews</span>
                                     </div>
 
                                     @if (Cart::instance('wishlist')->content()->where('id', $product->id)->count() > 0)
