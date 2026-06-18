@@ -97,6 +97,11 @@
                                                     </div>
                                                 </div>
                                             </a>
+                                            @if($order->status == 'delivered')
+                                            <a href="{{route('user.order.review',['order_id'=>$order->id])}}" class="btn btn-sm btn-primary mt-2" style="font-size:12px; padding:4px 8px;">
+                                                Beri Ulasan
+                                            </a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

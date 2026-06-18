@@ -297,6 +297,12 @@
                                 <button type="button" class="btn btn-success confirm-received" style="background-color: #40c710; border-color: #40c710; color: #fff; padding: 10px 24px; font-weight: 600;">Terima Pesanan</button>
                             </form>
                         </div>
+                    @elseif ($order->status == 'delivered')
+                        <div class="wg box mt-5 text-right">
+                            <a href="{{ route('user.order.review', ['order_id' => $order->id]) }}" class="btn btn-primary" style="padding: 10px 24px; font-weight: 600;">
+                                <i class="fa fa-star"></i> Beri Ulasan Produk
+                            </a>
+                        </div>
                     @endif
                 </div>
 

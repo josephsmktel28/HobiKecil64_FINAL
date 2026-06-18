@@ -61,9 +61,21 @@ class UserController extends Controller
                 $transaction->save();
             }
 
-            return back()->with('status', "Pesanan telah dikonfirmasi diterima. Terima kasih!");
+            return redirect()->route('user.order.review', ['order_id' => $order->id])->with('status', "Pesanan telah dikonfirmasi diterima. Silakan beri ulasan Anda!");
         }
         return back()->with('error', "Pesanan tidak dapat dikonfirmasi.");
+    }
+
+    public function order_review($order_id)
+    {
+        $order = Order::where('user_id', Auth::id())->where('id', $order_id)->firstOrFail();
+        
+        // Ensure the order is delivered
+        if ($order->status !== 'delivered') {
+            return redirect()->route('user.orders')->with('error', 'Pesanan belum selesai, tidak dapat memberikan ulasan.');
+        }
+
+        return view('user.order-review', compact('order'));
     }
 
     public function address()

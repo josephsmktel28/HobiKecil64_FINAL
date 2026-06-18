@@ -366,33 +366,7 @@
               @endif
             </div>
 
-            @if($canReview)
-            <div class="product-single__review-form mt-5">
-              <form name="customer-review-form" method="POST" action="{{ route('shop.review.store', ['product_id' => $product->id]) }}">
-                @csrf
-                <h5>Tulis Ulasan Anda</h5>
-                <p>Bagaimana pendapat Anda tentang produk ini?</p>
-                <div class="select-star-rating mb-3">
-                  <label>Rating Anda *</label>
-                  <select name="rating" id="form-input-rating" class="form-select form-control" required>
-                    <option value="">Pilih Rating...</option>
-                    <option value="5">5 Bintang - Sangat Bagus</option>
-                    <option value="4">4 Bintang - Bagus</option>
-                    <option value="3">3 Bintang - Cukup</option>
-                    <option value="2">2 Bintang - Kurang</option>
-                    <option value="1">1 Bintang - Sangat Kurang</option>
-                  </select>
-                </div>
-                <div class="mb-4">
-                  <label>Komentar</label>
-                  <textarea name="comment" id="form-input-review" class="form-control form-control_gray" placeholder="Tuliskan ulasan Anda..." cols="30" rows="5"></textarea>
-                </div>
-                <div class="form-action">
-                  <button type="submit" class="btn btn-primary">Kirim Ulasan</button>
-                </div>
-              </form>
             </div>
-            @endif
           </div>
         </div>
       </div>
